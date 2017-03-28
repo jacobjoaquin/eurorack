@@ -2,6 +2,8 @@ int buttons[] = {13, 14, 15, 16};
 int buttonStates[] = {1, 1, 0, 0};
 
 int leds[] = {12, 11, 10, 9};
+int ledsPWM[] = {20, 21, 22, 23};
+
 int triggerIn = 8;
 // int triggerLED = 7;
 
@@ -26,10 +28,16 @@ void next() {
   position = (position + 1) % nSteps;
   for(int i = 0; i < nSteps; i++) {
     digitalWrite(leds[i], LOW);
+    analogWrite(ledsPWM[i], 0);
   }
 
   digitalWrite(leds[position], HIGH);
 
+  if (buttonStates[position]) {
+    analogWrite(ledsPWM[position], 255);
+  } else {
+    analogWrite(ledsPWM[position], 8);
+  }
 
   // Turn on output (gate is determined by triggerIn);
   if (buttonStates[position] == HIGH) {
