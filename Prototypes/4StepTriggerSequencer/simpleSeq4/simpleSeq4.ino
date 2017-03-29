@@ -6,18 +6,18 @@ Part of my Eurorack Build Journal
 https://github.com/jacobjoaquin/eurorack
 */
 
-const int nSteps = 4;               // Number of steps
-int position = nSteps - 1;          // Current step position
-int buttons[] = {13, 14, 15, 16};   // Pins for buttons
-int buttonStates[] = {1, 1, 1, 1};  // Button states
-int ledsPWM[] = {20, 21, 22, 23};   // Pins for LEDs
-int triggerIn = 8;                  // Pin for Clock Input
-int triggerOut = 6;                 // Pin for Pulse Output
+const int nSteps = 4;              // Number of steps
+int position = nSteps - 1;         // Current step position
+int buttons[] = {13, 14, 15, 16};  // Pins for buttons
+int stepStates[] = {1, 1, 1, 1};   // Step states (1 = on, 0 = off)
+int ledsPWM[] = {20, 21, 22, 23};  // Pins for LEDs
+int triggerIn = 8;                 // Pin for Clock Input
+int triggerOut = 6;                // Pin for Pulse Output
 
 
 // Flips the state of the button
 void updateButtonState(int button) {
-  buttonStates[button] = !buttonStates[button];
+  stepStates[button] = !stepStates[button];
 }
 
 void updateButtonState0() {
@@ -38,13 +38,12 @@ void setup() {
   pinMode(triggerIn, INPUT);
   pinMode(triggerOut, OUTPUT);
 
-  // Setup buttons and LEDs
+  // Setup buttons
   for(int i = 0; i < nSteps; i++) {
     pinMode(buttons[i], INPUT);
-    pinMode(leds[i], OUTPUT);
   }
 
-  // Attach interrupts that flips button states
+  // Attach interrupts that flips step states
   attachInterrupt(digitalPinToInterrupt(buttons[0]), updateButtonState0, RISING);
   attachInterrupt(digitalPinToInterrupt(buttons[1]), updateButtonState1, RISING);
   attachInterrupt(digitalPinToInterrupt(buttons[2]), updateButtonState2, RISING);
@@ -67,7 +66,7 @@ void loop() {
   // digitalWrite(leds[position], HIGH);
 
   // Adust brightness of active LED
-  if (buttonStates[position]) {
+  if (stepStates[position]) {
     // Bright if played
     analogWrite(ledsPWM[position], 255);
   } else {
@@ -76,7 +75,7 @@ void loop() {
   }
 
   // Set output to HIGH for active step
-  if (buttonStates[position] == HIGH) {
+  if (stepStates[position] == HIGH) {
     digitalWrite(triggerOut, HIGH);
   }
 
