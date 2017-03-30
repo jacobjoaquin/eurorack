@@ -6,31 +6,30 @@ Part of my Eurorack Build Journal
 https://github.com/jacobjoaquin/eurorack
 */
 
-const int nSteps = 4;              // Number of steps
-int position = nSteps - 1;         // Current step position
-int buttons[] = {13, 14, 15, 16};  // Pins for buttons
-int stepStates[] = {1, 1, 1, 1};   // Step states (1 = on, 0 = off)
-int ledsPWM[] = {20, 21, 22, 23};  // Pins for LEDs
-int triggerIn = 8;                 // Pin for Clock Input
-int triggerOut = 6;                // Pin for Pulse Output
-
+const int nSteps = 4;                       // Number of steps
+int position = nSteps - 1;                  // Current step position
+int buttons[] = {13, 14, 15, 16};           // Pins for buttons
+int ledsPWM[] = {20, 21, 22, 23};           // Pins for LEDs
+int triggerIn = 8;                          // Pin for Clock Input
+int triggerOut = 6;                         // Pin for Pulse Output
+volatile int stepStates[] = {1, 1, 1, 1};   // Step states (1 = on, 0 = off)
 
 // Flips the state of the button
-void updateButtonState(int button) {
+void toggleButtonState(int button) {
   stepStates[button] = !stepStates[button];
 }
 
-void updateButtonState0() {
-  updateButtonState(0);
+void toggleButtonState0() {
+  toggleButtonState(0);
 }
-void updateButtonState1() {
-  updateButtonState(1);
+void toggleButtonState1() {
+  toggleButtonState(1);
 }
-void updateButtonState2() {
-  updateButtonState(2);
+void toggleButtonState2() {
+  toggleButtonState(2);
 }
-void updateButtonState3() {
-  updateButtonState(3);
+void toggleButtonState3() {
+  toggleButtonState(3);
 }
 
 void setup() {
@@ -44,10 +43,10 @@ void setup() {
   }
 
   // Attach interrupts that flips step states
-  attachInterrupt(digitalPinToInterrupt(buttons[0]), updateButtonState0, RISING);
-  attachInterrupt(digitalPinToInterrupt(buttons[1]), updateButtonState1, RISING);
-  attachInterrupt(digitalPinToInterrupt(buttons[2]), updateButtonState2, RISING);
-  attachInterrupt(digitalPinToInterrupt(buttons[3]), updateButtonState3, RISING);
+  attachInterrupt(digitalPinToInterrupt(buttons[0]), toggleButtonState0, RISING);
+  attachInterrupt(digitalPinToInterrupt(buttons[1]), toggleButtonState1, RISING);
+  attachInterrupt(digitalPinToInterrupt(buttons[2]), toggleButtonState2, RISING);
+  attachInterrupt(digitalPinToInterrupt(buttons[3]), toggleButtonState3, RISING);
 }
 
 void loop() {
@@ -59,11 +58,8 @@ void loop() {
 
   // Clear LEDs
   for(int i = 0; i < nSteps; i++) {
-    // digitalWrite(leds[i], LOW);
     analogWrite(ledsPWM[i], 0);
   }
-
-  // digitalWrite(leds[position], HIGH);
 
   // Adust brightness of active LED
   if (stepStates[position]) {
