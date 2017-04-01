@@ -7,7 +7,6 @@ unsigned long waitTime = 0;
 void resetClock() {
   digitalWrite(clockPin, LOW);
   digitalWrite(resetPin, LOW);
-  delay(5);
   digitalWrite(clockPin, HIGH);
   digitalWrite(resetPin, HIGH);
 }
