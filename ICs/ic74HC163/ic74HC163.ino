@@ -16,9 +16,9 @@ void setup() {
   Serial.begin(9600);
   pinMode(resetPin, OUTPUT);
   pinMode(clockPin, OUTPUT);
-  digitalWrite(resetPin, HIGH);
   pinMode(buttonPin, INPUT);
   attachInterrupt(digitalPinToInterrupt(buttonPin), resetClock, RISING);
+  digitalWrite(resetPin, HIGH);
 }
 
 void loop() {
