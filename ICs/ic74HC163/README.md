@@ -6,4 +6,6 @@ The 74HC163 is a presettable synchronous 4-bit binary counter. This example simp
 - LEDs display the current value of the counter.
 - The button resets the counter back to 0.
 
-![foo](./assets/ic74HC163_bb.png)
+![Fritzing diagram](./assets/ic74HC163_bb.png)
+
+![Breadboard](./assets/Arduino_74HC163.jpg)
