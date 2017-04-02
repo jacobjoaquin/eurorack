@@ -1,5 +1,5 @@
 // Pins
-int latchPin = 10;  // to RCLK DIP Pin 12
+int latchPin = 10;  // to RCLK DIP pin 12
 int clockPin = 11;  // to SER DIP pin 14
 int dataPin = 12;   // to SRCLK DIP pin 11
 
