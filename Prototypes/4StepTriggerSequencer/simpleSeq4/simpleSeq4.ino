@@ -7,7 +7,6 @@ https://github.com/jacobjoaquin/eurorack
 
 NOTE: The width of the output pulse is derived from the width
 of the Clock Input pulse
-
 */
 
 const int nSteps = 4;                            // Number of steps
@@ -33,34 +32,68 @@ void nextMode() {
   mode = (mode + 1) % nModes;
 }
 
-// Buttons and Debouncing
 
+// int lastButtonState[] = {0, 0, 0, 0}
+// int buttonStates[] = {0, 0, 0, 0}
+// uint32_t lastDebounceTime[] = {0, 0, 0, 0};
+// uint32_t debounceDelay = 50;
+//
+// void updateButton(int index) {
+//   // Buttons and Debouncing
+//   // read the state of the switch into a local variable:
+//   int reading = digitalRead(buttons[index]);
+//
+//   // check to see if you just pressed the button
+//   // (i.e. the input went from LOW to HIGH),  and you've waited
+//   // long enough since the last press to ignore any noise:
+//
+//   // If the switch changed, due to noise or pressing:
+//   if (reading != lastButtonState[index]) {
+//     // reset the debouncing timer
+//     lastDebounceTime[index] = millis();
+//   }
+//
+//   if ((millis() - lastDebounceTimelastDebounceTime[index]) > debounceDelay) {
+//     // whatever the reading is at, it's been there for longer
+//     // than the debounce delay, so take it as the actual current state:
+//
+//     // if the button state has changed:
+//     if (reading != buttonStates[index]) {
+//       buttonStates[index] = reading;
+//
+//       // only toggle the LED if the new button state is HIGH
+//       if (buttonStates[index] == HIGH) {
+//         stepStates[index] = !stepStates[index];
+//       }
+//     }
+//   }
+// }
 
-// Toggles step state
-void toggleState(int index) {
-  if (millis() >= stateTimers[index]) {
-    // Toggle if pressed
-    if (digitalRead(buttons[index]) == HIGH) {
-      stepStates[index] = !stepStates[index];
-    }
-  }
-
-  // Attempts to debounce button
-  stateTimers[index] = millis() + minStateDelay;
-}
-
-void toggleState0() {
-  toggleState(0);
-}
-void toggleState1() {
-  toggleState(1);
-}
-void toggleState2() {
-  toggleState(2);
-}
-void toggleState3() {
-  toggleState(3);
-}
+// // Toggles step state
+// void toggleState(int index) {
+//   if (millis() >= stateTimers[index]) {
+//     // Toggle if pressed
+//     if (digitalRead(buttons[index]) == HIGH) {
+//       stepStates[index] = !stepStates[index];
+//     }
+//   }
+//
+//   // Attempts to debounce button
+//   stateTimers[index] = millis() + minStateDelay;
+// }
+//
+// void toggleState0() {
+//   toggleState(0);
+// }
+// void toggleState1() {
+//   toggleState(1);
+// }
+// void toggleState2() {
+//   toggleState(2);
+// }
+// void toggleState3() {
+//   toggleState(3);
+// }
 
 void setup() {
   // Setup jack input and output
@@ -75,7 +108,7 @@ void setup() {
 
 void loop() {
   // Check for button press
-
+  // updateButtons();
 
   switch (mode) {
     case modeWaitForHigh:
