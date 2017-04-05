@@ -9,15 +9,13 @@ NOTE: The width of the output pulse is derived from the width
 of the Clock Input pulse
 */
 
-const int nSteps = 4;                            // Number of steps
-const uint32_t minStateDelay = 50;               // Minimum wait time before state change
-int position = nSteps - 1;                       // Current step position
-int buttons[] = {13, 14, 15, 16};                // Pins for buttons
-int ledsPWM[] = {20, 21, 22, 23};                // Pins for LEDs
-int clockInput = 8;                              // Pin for Clock Input
-int pulseOutput = 6;                             // Pin for Pulse Output
-volatile int stepStates[] = {1, 0, 1, 0};        // Step states (1 = on, 0 = off)
-volatile uint32_t stateTimers[] = {0, 0, 0, 0};  // Time since last state changes
+const int nSteps = 4;               // Number of steps
+int position = nSteps - 1;          // Current step position
+int buttons[] = {13, 14, 15, 16};   // Pins for buttons
+int ledsPWM[] = {20, 21, 22, 23};   // Pins for LEDs
+int clockInput = 8;                 // Pin for Clock Input
+int pulseOutput = 6;                // Pin for Pulse Output
+int stepStates[] = {1, 0, 0, 0};    // Step states (1 = on, 0 = off)
 
 // Modes
 const int nModes = 4;
@@ -27,73 +25,39 @@ const int modeWaitForLow = 2;
 const int modeLow = 3;
 int mode = modeWaitForHigh;
 
+// Button state debouncing
+const uint32_t debounceDelay = 20;
+uint32_t lastDebounceTime[] = {0, 0, 0, 0};
+int buttonStates[] = {0, 0, 0, 0};
+int lastButtonState[] = {0, 0, 0, 0};
+
 // Advances to the next mode
 void nextMode() {
   mode = (mode + 1) % nModes;
 }
 
+// Updates/debounces buttons and updates step states
+// Code is a derivative of:
+//     https://www.arduino.cc/en/tutorial/debounce
+void updateButton(int index) {
+  int reading = digitalRead(buttons[index]);
 
-// int lastButtonState[] = {0, 0, 0, 0}
-// int buttonStates[] = {0, 0, 0, 0}
-// uint32_t lastDebounceTime[] = {0, 0, 0, 0};
-// uint32_t debounceDelay = 50;
-//
-// void updateButton(int index) {
-//   // Buttons and Debouncing
-//   // read the state of the switch into a local variable:
-//   int reading = digitalRead(buttons[index]);
-//
-//   // check to see if you just pressed the button
-//   // (i.e. the input went from LOW to HIGH),  and you've waited
-//   // long enough since the last press to ignore any noise:
-//
-//   // If the switch changed, due to noise or pressing:
-//   if (reading != lastButtonState[index]) {
-//     // reset the debouncing timer
-//     lastDebounceTime[index] = millis();
-//   }
-//
-//   if ((millis() - lastDebounceTimelastDebounceTime[index]) > debounceDelay) {
-//     // whatever the reading is at, it's been there for longer
-//     // than the debounce delay, so take it as the actual current state:
-//
-//     // if the button state has changed:
-//     if (reading != buttonStates[index]) {
-//       buttonStates[index] = reading;
-//
-//       // only toggle the LED if the new button state is HIGH
-//       if (buttonStates[index] == HIGH) {
-//         stepStates[index] = !stepStates[index];
-//       }
-//     }
-//   }
-// }
+  if (reading != lastButtonState[index]) {
+    lastDebounceTime[index] = millis();
+  }
 
-// // Toggles step state
-// void toggleState(int index) {
-//   if (millis() >= stateTimers[index]) {
-//     // Toggle if pressed
-//     if (digitalRead(buttons[index]) == HIGH) {
-//       stepStates[index] = !stepStates[index];
-//     }
-//   }
-//
-//   // Attempts to debounce button
-//   stateTimers[index] = millis() + minStateDelay;
-// }
-//
-// void toggleState0() {
-//   toggleState(0);
-// }
-// void toggleState1() {
-//   toggleState(1);
-// }
-// void toggleState2() {
-//   toggleState(2);
-// }
-// void toggleState3() {
-//   toggleState(3);
-// }
+  if ((millis() - lastDebounceTime[index]) > debounceDelay) {
+    if (reading != buttonStates[index]) {
+      buttonStates[index] = reading;
+
+      if (buttonStates[index] == HIGH) {
+        stepStates[index] = !stepStates[index];
+      }
+    }
+  }
+
+  lastButtonState[index] = reading;
+}
 
 void setup() {
   // Setup jack input and output
@@ -108,7 +72,12 @@ void setup() {
 
 void loop() {
   // Check for button press
-  // updateButtons();
+  for (int i = 0; i < nSteps; i++) {
+    updateButton(0);
+    updateButton(1);
+    updateButton(2);
+    updateButton(3);
+  }
 
   switch (mode) {
     case modeWaitForHigh:
