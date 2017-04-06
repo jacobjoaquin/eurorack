@@ -9,13 +9,13 @@ NOTE: The width of the output pulse is derived from the width
 of the Clock Input pulse
 */
 
-const int nSteps = 4;               // Number of steps
-int position = nSteps - 1;          // Current step position
-int buttons[] = {13, 14, 15, 16};   // Pins for buttons
-int ledsPWM[] = {20, 21, 22, 23};   // Pins for LEDs
-int clockInput = 8;                 // Pin for Clock Input
-int pulseOutput = 6;                // Pin for Pulse Output
-int stepStates[] = {1, 0, 0, 0};    // Step states (1 = on, 0 = off)
+const int nSteps = 4;              // Number of steps
+int position = nSteps - 1;         // Current step position
+int buttons[] = {13, 14, 15, 16};  // Pins for buttons
+int ledsPWM[] = {20, 21, 22, 23};  // Pins for LEDs
+int clockInput = 8;                // Pin for Clock Input
+int pulseOutput = 6;               // Pin for Pulse Output
+int stepStates[] = {1, 0, 0, 0};   // Step states (1 = on, 0 = off)
 
 // Modes
 const int nModes = 4;
@@ -73,10 +73,7 @@ void setup() {
 void loop() {
   // Check for button press
   for (int i = 0; i < nSteps; i++) {
-    updateButton(0);
-    updateButton(1);
-    updateButton(2);
-    updateButton(3);
+    updateButton(i);
   }
 
   switch (mode) {
