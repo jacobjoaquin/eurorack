@@ -1,22 +1,32 @@
 int timerPin = A0;
 int oddsPin = A1;
 int randomPin = 13;
+int randomFlipPin = 12;
+int flip = false;
 
 int odds = 512;
 uint32_t lastTriggerTime = 0;
 
 void setup() {
-  Serial.begin(9600);
   pinMode(randomPin, OUTPUT);
+  pinMode(randomFlipPin, OUTPUT);
 }
 
 void loop() {
   uint32_t now = millis();
 
   if (now >= lastTriggerTime + analogRead(timerPin)) {
-    odds = analogRead(oddsPin);
-    Serial.println(odds);
-    digitalWrite(randomPin, random(1024) < odds ? HIGH : LOW);
     lastTriggerTime = now;
+    odds = analogRead(oddsPin);
+
+    if (random(1024) < odds) {
+      digitalWrite(randomPin, HIGH);
+
+      // Flip-flop
+      digitalWrite(randomFlipPin, flip);
+      flip = !flip;
+    } else {
+      digitalWrite(randomPin, LOW);
+    }
   }
 }
