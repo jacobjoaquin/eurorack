@@ -5,20 +5,20 @@ int random1Pin = 11;
 int flip = false;
 
 int odds = 512;
-uint32_t lastTriggerTime = 0;
+
+int clockInputPin = 10;
+int lastClockInput = LOW;
 
 void setup() {
   pinMode(random0Pin, OUTPUT);
   pinMode(random1Pin, OUTPUT);
+  pinMode(clockInputPin, INPUT);
 }
 
 void loop() {
-  uint32_t now = millis();
-  // uint32_t timerInput = analogRead(timerPin);
-  uint32_t timerInput = 50;
+  int clockInput = digitalRead(clockInputPin);
 
-  if (now >= lastTriggerTime + timerInput) {
-    lastTriggerTime = now;
+  if (clockInput == HIGH && clockInput != lastClockInput) {
     uint32_t odds0 = analogRead(odds0Pin);
     uint32_t odds1 = analogRead(odds1Pin);
 
@@ -36,4 +36,6 @@ void loop() {
       flip = !flip;
     }
   }
+  
+  lastClockInput = clockInput;
 }
