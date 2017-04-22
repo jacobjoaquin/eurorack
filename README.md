@@ -5,6 +5,7 @@ My build journal for DIY Eurorack modules.
 ## Projects
 
 - [4-Step Trigger Sequencer Prototype](./Prototypes/4StepTriggerSequencer/)
+- [Dual Random Pulse Generator](./Prototypes/dualRandomPulseGenerator/)
 
 ## Integrated Circuits
 
